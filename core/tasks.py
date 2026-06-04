@@ -130,7 +130,7 @@ def scroll_and_select_user(page, username, targets):
                     targetSymbol = targetName
 
                 if targetSymbol in targets:
-                    element.click()
+                    element.click(force=True)
                     if matchMode == "short_id":
                         logger.debug(
                             f"账号 {username} 选中目标好友 {targetName} 准备开始交互"
