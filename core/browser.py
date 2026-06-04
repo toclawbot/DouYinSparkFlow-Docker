@@ -25,17 +25,11 @@ def get_browser():
 
     headless = True
 
-    env = get_environment()
-    if env == Environment.LOCAL:
-        os.environ["PLAYWRIGHT_BROWSERS_PATH"] = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), PLAYWRIGHT_BROWSERS_PATH)
-        )
-        if DEBUG:
-            headless = False
-    elif env == Environment.PACKED:
-        os.environ["PLAYWRIGHT_BROWSERS_PATH"] = os.path.abspath(
-            os.path.join(os.path.dirname(sys.executable), PLAYWRIGHT_BROWSERS_PATH)
-        )
+    # 移除所有手动修改 PLAYWRIGHT_BROWSERS_PATH 的逻辑
+    # 让 Playwright 使用默认的系统路径 /ms-playwright
+    
+    if DEBUG:
+        headless = False
 
     try:
         # 启动浏览器
@@ -44,9 +38,4 @@ def get_browser():
         return playwright, browser
     except Exception as e:
         # 捕获浏览器启动错误
-        if "Executable doesn't exist" in str(e) and env != Environment.GITHUBACTION:
-            print("浏览器可执行文件不存在！")
-            install_browser()
-            sys.exit(1)
-        else:
-            traceback.print_exc()
+        traceback.print_exc()
