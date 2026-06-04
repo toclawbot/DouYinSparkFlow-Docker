@@ -28,7 +28,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: toclawbot/douyin-spark-flow
+          # 动态使用 Secret 中的用户名，确保身份完全一致
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/douyin-spark-flow
           tags: |
             type=raw,value=latest
             type=sha,format=short
