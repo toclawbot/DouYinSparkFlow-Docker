@@ -23,13 +23,9 @@ def get_browser():
     :return: 浏览器实例
     """
 
+    # 在 Docker 部署环境下，必须强制使用无头模式 (headless=True)
+    # 否则会因为缺少 XServer (图形界面) 而导致 TargetClosedError 崩溃
     headless = True
-
-    # 移除所有手动修改 PLAYWRIGHT_BROWSERS_PATH 的逻辑
-    # 让 Playwright 使用默认的系统路径 /ms-playwright
-    
-    if DEBUG:
-        headless = False
 
     try:
         # 启动浏览器
