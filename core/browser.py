@@ -23,15 +23,23 @@ def get_browser():
     :return: 浏览器实例
     """
 
-    # 在 Docker 部署环境下，必须强制使用无头模式 (headless=True)
-    # 否则会因为缺少 XServer (图形界面) 而导致 TargetClosedError 崩溃
     headless = True
 
     try:
         # 启动浏览器
         playwright = sync_playwright().start() 
-        browser = playwright.chromium.launch(headless=headless)
+        # 增加关键参数，彻底解决 Linux/Docker 平台初始化失败问题
+        browser = playwright.chromium.launch(
+            headless=headless,
+            args=[
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu"
+            ]
+        )
         return playwright, browser
     except Exception as e:
-        # 捕获浏览器启动错误
         traceback.print_exc()
+        print("❌ 浏览器启动失败，请检查环境变量或镜像完整性。")
+        sys.exit(1) # 失败时直接退出进程，而不是返回 None 导致后续解包崩溃
